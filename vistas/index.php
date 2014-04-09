@@ -29,7 +29,7 @@ function theadTable(table){
 </style>
     </head>
     <body>
-        <h2>Nuevo Tipo Sensor hola</h2>
+        <h2>Nuevo Tipo Sensor hola yeison</h2>
         
         <form action='../funciones/guardar.php'>
             <input type="hidden" name='opcion' value='nuevoTipoSensor' />
