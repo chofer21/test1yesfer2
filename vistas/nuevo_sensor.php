@@ -1,3 +1,17 @@
+<?php
+include ('../configuracion/conexion.php');
+
+$consulta_tipos_sensores = "SELECT id FROM tipo_sensor";
+$con_tipos_sensores = q($consulta_tipos_sensores);
+
+$agregar = true;
+if( count($con_tipos_sensores)> 0 ){
+    $agregar = false;
+};
+
+
+?>
+
 <html>
     <head>
         
@@ -29,7 +43,9 @@ function theadTable(table){
 </style>
     </head>
     <body>
-        <h2>Nuevo Tipo Sensor hola yeison</h2>
+        <h2>Nuevo Sensor</h2>
+
+<?php if($agregar){ ?>        
         
         <form action='../funciones/guardar.php'>
             <input type="hidden" name='opcion' value='nuevoTipoSensor' />
@@ -63,7 +79,6 @@ function theadTable(table){
 
 <?php
 
-include ('../configuracion/conexion.php');
 
 echo "<h1>hola</h1>";
 
@@ -95,9 +110,27 @@ echo "</tbody>";
 echo "</table>";
 
 
+
+}// fin agregar 
+else{
+?>
+<br />
+
+<div class="alert alert-warning">
+    Debe agreagar un tipo de sensor <button></button>    
+</div>
+
+        
+        
+<?php
+}
+
+
 ?>
 
        
+        
+        
         
         
         

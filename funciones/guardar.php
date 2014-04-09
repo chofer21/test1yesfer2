@@ -2,7 +2,7 @@
 include ('../configuracion/conexion.php');
 
 $opcion = $_REQUEST["opcion"];
-if($opcion=="nuevoTipoSensor"){
+if($opcion=="nuevo_tipo_sensor"){
 
     $descripcion = $_REQUEST["descripcion"];
     $rangoMax = $_REQUEST["rangoMax"];
