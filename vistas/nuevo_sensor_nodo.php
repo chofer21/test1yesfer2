@@ -7,7 +7,7 @@ $consulta_sensores = "SELECT id FROM sensor " ;
 $con_sensores = q($consulta_sensores);
 
 $agregar = TRUE;
-if(count($con_sensores>0)){
+if(count($con_sensores==0)){
     $agregar=FALSE;
     }
 
@@ -118,10 +118,14 @@ else{
       
         <br />
         
-        <div class="alert-warning">
-            
-           Debe agregar sensores
-        </div>
+<div class="alert alert-warning">
+    No hay sensores agregados, debe agregar un  &nbsp;&nbsp;
+  <a href='nuevo_sensor.php' target='_blanck'>    
+        <button type="button" class="btn btn-info">
+          <span class="glyphicon glyphicon-plus"></span> sensor
+        </button>    
+  </a>
+</div>
         
     <?php
     

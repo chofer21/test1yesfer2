@@ -9,6 +9,8 @@ include ('../configuracion/conexion.php');
 <script src="../js/bootstrap/js/bootstrap.js" ></script>
 <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" >
 <script>
+function cl(m){ console.log(m); }  
+    
 $(document).ready(function(){
     
 $(".titlefor").each(function(){
@@ -22,6 +24,27 @@ function theadTable(table){
 	$("#" + table + " > thead").append("<th>" + title + "</th>");
     });
 }    
+
+$(".bEliminar").click( function(){
+    var id_tipo_sensor = $(this).attr("id_tipo_sensor");
+    var $this = $(this);
+    $.post( "../controlador/control_funciones.php", 
+            { opcion: "eliminar_tipo_sensor",
+              id_tipo_sensor: id_tipo_sensor 
+            },
+            function(data){
+                if(data!==''){
+                    alert(data)
+                }else{
+                    $this.closest("tr").remove();    
+                }
+            }
+    );
+         
+         
+    
+});
+
 
 });
 </script>
@@ -43,11 +66,11 @@ function theadTable(table){
                 </tr>
                 <tr>
                     <td>Rango Max</td> 
-                    <td><input type='number' name='rangoMax' required /> </td> 
+                    <td><input type='number' name='rango_max' required /> </td> 
                 </tr>
                 <tr>
                     <td>Rango Min</td> 
-                    <td><input type='number' name='rangoMin' required /> </td> 
+                    <td><input type='number' name='rango_min' required /> </td> 
                 </tr>
                 <tr>
                     <td colspan='2'>
@@ -67,13 +90,16 @@ function theadTable(table){
 <?php
 
 
-echo "<h1>hola</h1>";
+echo "<h1>Tipos sensores</h1>";
 
-$consulta = "SELECT descripcion,
-                    rangoMax,
-                    rangoMin
+$consulta = "SELECT id,
+                    descripcion,
+                    rango_max,
+                    rango_min
                FROM tipo_sensor";
 $con = q($consulta);
+
+if(count($con) > 0){
 
 
 echo "<table class='table titlefor' id='tableTipos' border='1'>";
@@ -85,10 +111,17 @@ echo "<tr>";
         echo $c["descripcion"];
     echo "</td>";
     echo "<td titlefor='Rango Max'>"; 
-        echo $c["rangoMax"];
+        echo $c["rango_max"];
     echo "</td>";
     echo "<td titlefor='Rango Min'>"; 
-        echo $c["rangoMin"];
+        echo $c["rango_min"];
+    echo "</td>";
+    echo "<td titlefor='Eliminar'>"; 
+        echo "  <button type='submit' class='bEliminar btn btn-danger' id_tipo_sensor='".$c["id"]."'>
+                    <span class='glyphicon glyphicon-remove'></span>
+                </button> 
+            ";
+        echo $c["id"];
     echo "</td>";
 echo "</tr>";
 }
@@ -96,6 +129,11 @@ echo "</tbody>";
 
 echo "</table>";
 
+
+}else{
+    echo "No hay datos";
+    
+}
 
 ?>
 
