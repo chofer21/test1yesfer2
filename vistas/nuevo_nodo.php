@@ -1,25 +1,18 @@
-<?php
+<?php 
 include ('../configuracion/conexion_1.php');
 
-$consulta_tipos_sensores = "SELECT id, descripcion AS tipo FROM tipo_sensor";
-$con_tipos_sensores = q($consulta_tipos_sensores);
 
-$lista_tipos_sensores = "";
-foreach($con_tipos_sensores as $c){
-    $lista_tipos_sensores .="<option value='".$c["id"]."'>".$c["tipo"]."</option>";
-}
-
+$consulta_sensores = "SELECT id FROM sensor";
+$con_sensores = q($consulta_sensores);
 
 $agregar = true;
-if( count($con_tipos_sensores)==0 ){
+if( count($con_sensores)==0 ){
     $agregar = false;
 };
 
 
 
-
 ?>
-
 <html>
     <head>
         
@@ -28,8 +21,7 @@ if( count($con_tipos_sensores)==0 ){
 <script src="../js/bootstrap/js/bootstrap.js" ></script>
 <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" >
 <script>
-    
-function cl(m){ console.log(m); }    
+function cl(m){ console.log(m); }  
     
 $(document).ready(function(){
     
@@ -45,25 +37,25 @@ function theadTable(table){
     });
 }    
 
-
-
 $(".bEliminar").click( function(){
-    var id_sensor = $(this).attr("id_sensor");
-    
+    var id_nodo = $(this).attr("id_nodo");
+    var $this = $(this);
     $.post( "../controlador/control_funciones.php", 
-            { opcion: "eliminar_sensor",
-              id_sensor: id_sensor 
+            { opcion: "eliminar_nodo",
+              id_nodo: id_nodo 
             },
             function(data){
-                cl(data)
+                if(data!==''){
+                    alert(data)
+                }else{
+                    $this.closest("tr").remove();    
+                }
             }
     );
-        
-    $(this).closest("tr").remove();    
+         
+         
     
 });
-
-
 
 
 });
@@ -75,12 +67,14 @@ $(".bEliminar").click( function(){
 </style>
     </head>
     <body>
-        <h2>Nuevo Sensor</h2>
+        <h2>Nuevo Nodo</h2>
+
 
 <?php if($agregar){ ?>        
+               
         
         <form action='../funciones/guardar.php'>
-            <input type="hidden" name='opcion' value='nuevo_sensor' />
+            <input type="hidden" name='opcion' value='nuevo_nodo' />
             
             <table class='table'>
                 <tr>
@@ -90,18 +84,12 @@ $(".bEliminar").click( function(){
                 <tr>
                     <td>Tipo</td> 
                     <td>
-                        <select name='tipo_sensor_id'>
-                            <?php echo $lista_tipos_sensores; ?> 
+                        <select name='tipo_nodo'>
+                            <option value='normal'>Normal</option>
+                            <option value='salida'>Entrada/salida</option>
                         </select>
+                        
                     </td> 
-                </tr>
-                <tr>
-                    <td>Mux</td> 
-                    <td><input type='number' name='mux' required /> </td> 
-                </tr>
-                <tr>
-                    <td>Posicion</td> 
-                    <td><input type='number' name='posicion' required /> </td> 
                 </tr>
                 <tr>
                     <td colspan='2'>
@@ -121,15 +109,10 @@ $(".bEliminar").click( function(){
 <?php
 
 
-echo "<h1>Tipos sensores</h1>";
+echo "<h1>Nodos</h1>";
 
-$consulta = "SELECT s.id,
-                s.descripcion,
-                t.descripcion as tipo_sensor,
-                s.mux,
-                s.posicion
-           FROM sensor s, tipo_sensor t
-           WHERE s.tipo_sensor_id = t.id";
+$consulta = "SELECT id,descripcion, tipo
+             FROM nodo";
 $con = q($consulta);
 
 if(count($con) > 0){
@@ -140,20 +123,14 @@ echo "<thead></thead>";
 echo "<tbody>";
 foreach($con as $c){
 echo "<tr>";
-    echo "<td titlefor='Sensor'>"; 
+    echo "<td titlefor='Nombre'>"; 
         echo $c["descripcion"];
     echo "</td>";
     echo "<td titlefor='Tipo'>"; 
-        echo $c["tipo_sensor"];
-    echo "</td>";
-    echo "<td titlefor='Mux'>"; 
-        echo $c["mux"];
-    echo "</td>";
-    echo "<td titlefor='Posicion'>"; 
-        echo $c["posicion"];
+        echo $c["tipo"];
     echo "</td>";
     echo "<td titlefor='Eliminar'>"; 
-        echo "  <button type='submit' class='bEliminar btn btn-danger' id_sensor='".$c["id"]."'>
+        echo "  <button type='submit' class='bEliminar btn btn-danger' id_nodo='".$c["id"]."'>
                     <span class='glyphicon glyphicon-remove'></span>
                 </button> 
             ";
@@ -179,10 +156,10 @@ else{
 <br />
 
 <div class="alert alert-warning">
-    No hay tipo sensor, debe agregar un  &nbsp;&nbsp;
-  <a href='nuevo_tipo_sensor.php' target='_blanck'>    
+    No hay sensores para agregar al nodo, debe agregar un nuevo  &nbsp;&nbsp;
+  <a href='nuevo_sensor.php' target='_blanck'>    
         <button type="button" class="btn btn-info">
-          <span class="glyphicon glyphicon-plus"></span> tipo sensor
+          <span class="glyphicon glyphicon-plus"></span> sensor
         </button>    
   </a>
 </div>
@@ -190,13 +167,9 @@ else{
                
 <?php
 }
-
-
 ?>
 
        
-        
-        
         
         
         
