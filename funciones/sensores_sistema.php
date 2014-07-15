@@ -1,3 +1,19 @@
 <?php
 include ('../configuracion/conexion_1.php');
-echo "hola";
+
+$consulta_sensores = "SELECT id, mux, posicion
+			FROM sensor
+		      ORDER BY mux, posicion";
+$con_sensores = q($consulta_sensores);
+
+$datos_sensores = "";
+foreach($con_sensores as $cs){
+    $datos_sensores .= "id=".$cs["id"]."_";
+    $datos_sensores .= "mux=".$cs["mux"]."_";
+    $datos_sensores .= "posicion=".$cs["posicion"];
+    $datos_sensores .= "_YYY_"; //Separador
+}
+
+echo $datos_sensores;
+
+?> 
