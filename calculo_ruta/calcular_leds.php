@@ -352,6 +352,33 @@ if($debug){
     echo "</pre>";
 }
 
+$where_leds = "";
+foreach($fin as  $cam){
+    $cam_actual = explode("-", $cam);
+    $c_ini = $cam_actual[0];
+    $c_fin = $cam_actual[1];
+    
+    $where_leds .= " (c.inicio='$c_ini' AND c.fin='$c_fin' AND cl.sentido='normal') OR "
+		 . " (c.inicio='$c_fin' AND c.fin='$c_ini' AND cl.sentido='inverso') OR"; 
+}
+
+$consulta_leds = "SELECT l.id, l.mux, l.posicion
+		    FROM camino c, camino_led cl, led l
+		  WHERE	    c.id = cl.camino_id AND cl.led_id = l.id
+			AND ( ".substr($where_leds,0,-2)." )
+		 ORDER BY l.mux, l.posicion ";
+$con_leds = q($consulta_leds,1);
+
+$datos_leds = "";
+foreach($con_leds as $cl){
+    $datos_leds .= "id=".$cl["id"]."_";
+    $datos_leds .= "mux=".$cl["mux"]."_";
+    $datos_leds .= "posicion=".$cl["posicion"];
+    $datos_leds .= "_YYY_"; //Separador
+}
+
+echo $datos_sensores;
+
 
 echo implode( "_YYY_", $fin);
 
