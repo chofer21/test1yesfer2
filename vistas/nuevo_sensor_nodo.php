@@ -1,6 +1,17 @@
-<?php 
+<?php
+
 include ('../configuracion/conexion_1.php');
-?>
+
+
+$consulta_sensores = "SELECT id FROM sensor " ;
+$con_sensores = q($consulta_sensores);
+
+$agregar = TRUE;
+if(count($con_sensores==0)){
+    $agregar=FALSE;
+    }
+
+?>      
 <html>
     <head>
         
@@ -9,8 +20,6 @@ include ('../configuracion/conexion_1.php');
 <script src="../js/bootstrap/js/bootstrap.js" ></script>
 <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" >
 <script>
-function cl(m){ console.log(m); }  
-    
 $(document).ready(function(){
     
 $(".titlefor").each(function(){
@@ -25,27 +34,6 @@ function theadTable(table){
     });
 }    
 
-$(".bEliminar").click( function(){
-    var id_tipo_sensor = $(this).attr("id_tipo_sensor");
-    var $this = $(this);
-    $.post( "../controlador/control_funciones.php", 
-            { opcion: "eliminar_tipo_sensor",
-              id_tipo_sensor: id_tipo_sensor 
-            },
-            function(data){
-                if(data!==''){
-                    alert(data)
-                }else{
-                    $this.closest("tr").remove();    
-                }
-            }
-    );
-         
-         
-    
-});
-
-
 });
 </script>
 <style>
@@ -54,17 +42,15 @@ $(".bEliminar").click( function(){
     }
 </style>
     </head>
-    
     <body>
+        <h2>Nuevo nodo</h2>
+ 
         
-        <?php require_once("menu.php"); ?>
-        
-        <div class="container" style="width: 40%">
-        
-        <h2>Nuevo Tipo Sensor</h2>
+<?php
+if($agregar){ ?>     
         
         <form action='../funciones/guardar.php'>
-            <input type="hidden" name='opcion' value='nuevo_tipo_sensor' />
+            <input type="hidden" name='opcion' value='nuevo_nodo' />
             <table class='table'>
                 <tr>
                     <td>Description</td> 
@@ -72,11 +58,11 @@ $(".bEliminar").click( function(){
                 </tr>
                 <tr>
                     <td>Rango Max</td> 
-                    <td><input type='number' name='rango_max' required /> </td> 
+                    <td><input type='number' name='rangoMax' required /> </td> 
                 </tr>
                 <tr>
                     <td>Rango Min</td> 
-                    <td><input type='number' name='rango_min' required /> </td> 
+                    <td><input type='number' name='rangoMin' required /> </td> 
                 </tr>
                 <tr>
                     <td colspan='2'>
@@ -89,23 +75,19 @@ $(".bEliminar").click( function(){
             
         </form>
             
-             
+            
         
 
 
 <?php
 
+echo "<h1>hola</h1>";
 
-echo "<h1>Tipos sensores</h1>";
-
-$consulta = "SELECT id,
-                    descripcion,
-                    rango_max,
-                    rango_min
+$consulta = "SELECT descripcion,
+                    rangoMax,
+                    rangoMin
                FROM tipo_sensor";
 $con = q($consulta);
-
-if(count($con) > 0){
 
 
 echo "<table class='table titlefor' id='tableTipos' border='1'>";
@@ -117,17 +99,10 @@ echo "<tr>";
         echo $c["descripcion"];
     echo "</td>";
     echo "<td titlefor='Rango Max'>"; 
-        echo $c["rango_max"];
+        echo $c["rangoMax"];
     echo "</td>";
     echo "<td titlefor='Rango Min'>"; 
-        echo $c["rango_min"];
-    echo "</td>";
-    echo "<td titlefor='Eliminar'>"; 
-        echo "  <button type='submit' class='bEliminar btn btn-danger' id_tipo_sensor='".$c["id"]."'>
-                    <span class='glyphicon glyphicon-remove'></span>
-                </button> 
-            ";
-        echo $c["id"];
+        echo $c["rangoMin"];
     echo "</td>";
 echo "</tr>";
 }
@@ -136,16 +111,33 @@ echo "</tbody>";
 echo "</table>";
 
 
-}else{
-    echo "No hay datos";
-    
+
 }
+else{
+    ?>
+      
+        <br />
+        
+<div class="alert alert-warning">
+    No hay sensores agregados, debe agregar un  &nbsp;&nbsp;
+  <a href='nuevo_sensor.php' target='_blanck'>    
+        <button type="button" class="btn btn-info">
+          <span class="glyphicon glyphicon-plus"></span> sensor
+        </button>    
+  </a>
+</div>
+        
+    <?php
+    
+    
+ }
 
 ?>
 
+
        
         
-        </div>
+        
         
     </body>
 </html>

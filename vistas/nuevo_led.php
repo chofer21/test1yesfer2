@@ -15,9 +15,6 @@ if( count($con_tipos_sensores)==0 ){
     $agregar = false;
 };
 
-
-
-
 ?>
 
 <html>
@@ -47,8 +44,6 @@ function theadTable(table){
 
 
 
-
-
 $(".bEliminar").click( function(){
     var id_sensor = $(this).attr("id_led");
     
@@ -64,8 +59,8 @@ $("#eliminar_").click(function(){
     var id_sensor = $(this).attr("led");
     
     $.post( "../controlador/control_funciones.php", 
-            { opcion: "eliminar_sensor",
-              id_senso: id_sensor 
+            { opcion: "eliminar_led",
+              id_led: id_sensor 
             },
             function(data){
                 cl(data)
@@ -73,15 +68,10 @@ $("#eliminar_").click(function(){
     );
         
     $("#tr_"+id_sensor).remove();
-    $("#eliminar").modal('hide');   
-  
-
-
-
-
-
-
+    $("#eliminar").hide();   
+    
 })
+
 
 
 
@@ -99,25 +89,17 @@ $("#eliminar_").click(function(){
         
         <div class="container" style="width: 40%">
         
-        <h2>Nuevo Sensor</h2>
+        <h2>Nuevo Led</h2>
 
 <?php if($agregar){ ?>        
         
         <form action='../funciones/guardar.php'>
-            <input type="hidden" name='opcion' value='nuevo_sensor' />
+            <input type="hidden" name='opcion' value='nuevo_led' />
             
             <table class='table'>
                 <tr>
-                    <td>Description</td> 
+                    <td>Descripcion</td> 
                     <td><input type='text' name='descripcion' required /> </td> 
-                </tr>
-                <tr>
-                    <td>Tipo</td> 
-                    <td>
-                        <select name='tipo_sensor_id'>
-                            <?php echo $lista_tipos_sensores; ?> 
-                        </select>
-                    </td> 
                 </tr>
                 <tr>
                     <td>Mux</td> 
@@ -145,30 +127,24 @@ $("#eliminar_").click(function(){
 <?php
 
 
-echo "<h1>Tipos sensores</h1>";
+echo "<h1>Tipos Leds</h1>";
 
-$consulta = "SELECT s.id,
-                s.descripcion,
-                t.descripcion as tipo_sensor,
-                s.mux,
-                s.posicion
-           FROM sensor s, tipo_sensor t
-           WHERE s.tipo_sensor_id = t.id";
+$consulta = "SELECT *
+           FROM led";
 $con = q($consulta);
 
 if(count($con) > 0){
 
 
 echo "<table class='table titlefor' id='tableTipos' border='1'>";
-echo "<thead></thead>";
+echo "<thead>";
+    
+echo "</thead>";
 echo "<tbody>";
 foreach($con as $c){
 echo "<tr id='tr_".$c['id']."'>";
-    echo "<td titlefor='Sensor'>"; 
+    echo "<td titlefor='Led'>"; 
         echo $c["descripcion"];
-    echo "</td>";
-    echo "<td titlefor='Tipo'>"; 
-        echo $c["tipo_sensor"];
     echo "</td>";
     echo "<td titlefor='Mux'>"; 
         echo $c["mux"];
@@ -198,35 +174,17 @@ echo "</table>";
 
 
 }// fin agregar 
-else{
+
 ?>
 <br />
 
-<div class="alert alert-warning">
-    No hay tipo sensor, debe agregar un  &nbsp;&nbsp;
-  <a href='nuevo_tipo_sensor.php' target='_blanck'>    
-        <button type="button" class="btn btn-info">
-          <span class="glyphicon glyphicon-plus"></span> tipo sensor
-        </button>    
-  </a>
-</div>
-
-               
-<?php
-}
-
-
-?>
-
-       
+ 
         
         
         
         </div>
         
     </body>
-    
-    
     
     <div class="modal fade" id="eliminar">
   <div class="modal-dialog">
@@ -236,7 +194,7 @@ else{
         <h4 class="modal-title">CONFIRMACION</h4>
       </div>
       <div class="modal-body">
-        <p>Esta seguro que desea eliminar este sensor? Si continua se eliminaran los sensores asignados a un camino.</p>
+        <p>Esta seguro que desea eliminar este led? Si continua se eliminaran los led asignados a un camino.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>

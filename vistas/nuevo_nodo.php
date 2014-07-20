@@ -1,5 +1,17 @@
 <?php 
 include ('../configuracion/conexion_1.php');
+
+
+$consulta_sensores = "SELECT id FROM sensor";
+$con_sensores = q($consulta_sensores);
+
+$agregar = true;
+if( count($con_sensores)==0 ){
+    $agregar = false;
+};
+
+
+
 ?>
 <html>
     <head>
@@ -26,11 +38,11 @@ function theadTable(table){
 }    
 
 $(".bEliminar").click( function(){
-    var id_tipo_sensor = $(this).attr("id_tipo_sensor");
+    var id_nodo = $(this).attr("id_nodo");
     var $this = $(this);
     $.post( "../controlador/control_funciones.php", 
-            { opcion: "eliminar_tipo_sensor",
-              id_tipo_sensor: id_tipo_sensor 
+            { opcion: "eliminar_nodo",
+              id_nodo: id_nodo 
             },
             function(data){
                 if(data!==''){
@@ -54,29 +66,30 @@ $(".bEliminar").click( function(){
     }
 </style>
     </head>
-    
     <body>
-        
-        <?php require_once("menu.php"); ?>
-        
-        <div class="container" style="width: 40%">
-        
-        <h2>Nuevo Tipo Sensor</h2>
+        <h2>Nuevo Nodo</h2>
+
+
+<?php if($agregar){ ?>        
+               
         
         <form action='../funciones/guardar.php'>
-            <input type="hidden" name='opcion' value='nuevo_tipo_sensor' />
+            <input type="hidden" name='opcion' value='nuevo_nodo' />
+            
             <table class='table'>
                 <tr>
                     <td>Description</td> 
                     <td><input type='text' name='descripcion' required /> </td> 
                 </tr>
                 <tr>
-                    <td>Rango Max</td> 
-                    <td><input type='number' name='rango_max' required /> </td> 
-                </tr>
-                <tr>
-                    <td>Rango Min</td> 
-                    <td><input type='number' name='rango_min' required /> </td> 
+                    <td>Tipo</td> 
+                    <td>
+                        <select name='tipo_nodo'>
+                            <option value='normal'>Normal</option>
+                            <option value='salida'>Entrada/salida</option>
+                        </select>
+                        
+                    </td> 
                 </tr>
                 <tr>
                     <td colspan='2'>
@@ -89,20 +102,17 @@ $(".bEliminar").click( function(){
             
         </form>
             
-             
+            
         
 
 
 <?php
 
 
-echo "<h1>Tipos sensores</h1>";
+echo "<h1>Nodos</h1>";
 
-$consulta = "SELECT id,
-                    descripcion,
-                    rango_max,
-                    rango_min
-               FROM tipo_sensor";
+$consulta = "SELECT id,descripcion, tipo
+             FROM nodo";
 $con = q($consulta);
 
 if(count($con) > 0){
@@ -113,17 +123,14 @@ echo "<thead></thead>";
 echo "<tbody>";
 foreach($con as $c){
 echo "<tr>";
-    echo "<td titlefor='Tipo'>"; 
+    echo "<td titlefor='Nombre'>"; 
         echo $c["descripcion"];
     echo "</td>";
-    echo "<td titlefor='Rango Max'>"; 
-        echo $c["rango_max"];
-    echo "</td>";
-    echo "<td titlefor='Rango Min'>"; 
-        echo $c["rango_min"];
+    echo "<td titlefor='Tipo'>"; 
+        echo $c["tipo"];
     echo "</td>";
     echo "<td titlefor='Eliminar'>"; 
-        echo "  <button type='submit' class='bEliminar btn btn-danger' id_tipo_sensor='".$c["id"]."'>
+        echo "  <button type='submit' class='bEliminar btn btn-danger' id_nodo='".$c["id"]."'>
                     <span class='glyphicon glyphicon-remove'></span>
                 </button> 
             ";
@@ -141,11 +148,30 @@ echo "</table>";
     
 }
 
+
+
+}// fin agregar 
+else{
+?>
+<br />
+
+<div class="alert alert-warning">
+    No hay sensores para agregar al nodo, debe agregar un nuevo  &nbsp;&nbsp;
+  <a href='nuevo_sensor.php' target='_blanck'>    
+        <button type="button" class="btn btn-info">
+          <span class="glyphicon glyphicon-plus"></span> sensor
+        </button>    
+  </a>
+</div>
+
+               
+<?php
+}
 ?>
 
        
         
-        </div>
+        
         
     </body>
 </html>
