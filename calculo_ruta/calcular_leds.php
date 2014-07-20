@@ -374,7 +374,7 @@ $datos_leds = "";
 $mux_data = array();
 
 $todos_los_mux = q( "select distinct mux from led" );
-
+//Todos los mux y puertos se inician con codigo 0
 foreach( $todos_los_mux as $tm){
     $mux_data[$tm["mux"]]["A"][1] = 0; 
     $mux_data[$tm["mux"]]["B"][1] = 0; 
@@ -390,11 +390,6 @@ foreach($con_leds as $cl){
     
     $mux_data[ $cl["mux"] ][ $puerto ][$posicion] = $posicion;
     
-    
-    $datos_leds .= "op2_id=".$cl["id"]."_";
-    $datos_leds .= "mux=".$cl["mux"]."_";
-    $datos_leds .= "posicion=".$cl["posicion"];
-    $datos_leds .= "_YYY_"; //Separador
 }
 
 $cadena = "";
@@ -416,8 +411,8 @@ foreach ( $mux_data as $km=>$puertos){ //Recorrer cada mux
             }
             
         }
-        $dec_actual = bindec($bin_actual); 
-        $cadena .=  "_cod=$dec_actual";
+        $dec_actual = bindec($bin_actual); //Convierte a decimal 
+        $cadena .=  "_cod=$dec_actual"; 
         $cadena .=  "_YYY_";
         
 if($debug){ echo "$km $kp $bin_actual   $dec_actual <br>"; }
